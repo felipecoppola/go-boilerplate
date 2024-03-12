@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  api:
+    build: .
+    command: "/usr/bin/api"
+    ports: [ "3000:3000" ]
+    env_file:
+      - .env
+    environment:
+      - CI_COMMIT_SHA=local
+      - CI_PROJECT_NAME=api
+    restart: unless-stopped
+    healthcheck:
+      test: curl --fail http://localhost:3000/health | grep '^OK' || exit 1
+      interval: 30s
+      retries: 2
+      start_period: 20s
+      timeout: 5s
